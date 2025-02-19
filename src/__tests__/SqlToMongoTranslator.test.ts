@@ -39,7 +39,7 @@ describe('SqlToMongoTranslator', () => {
         },
         {
         $project: {
-            _id: 1,
+            id: 1,
                 username: 1,
                 lastname: 1,
                 B_count: { $size: '$B_records' },
@@ -47,7 +47,7 @@ describe('SqlToMongoTranslator', () => {
         }
         },
         {
-        $sort: { _id: 1 }
+        $sort: { id: 1 }
         }
     ];
 
