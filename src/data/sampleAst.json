@@ -1,0 +1,211 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "sourceDialect": "SQL",
+    "timestamp": "2023-01-01T00:00:00Z"
+  },
+  "type": "select",
+  "distinct": false,
+  "fields": [
+    {
+      "type": "field",
+      "field": "id",
+      "table": "A",
+      "alias": "id",
+      "dataType": "number"
+    },
+    {
+      "type": "field",
+      "field": "username",
+      "table": "A",
+      "alias": "username",
+      "dataType": "string"
+    },
+    {
+      "type": "field",
+      "field": "lastname",
+      "table": "A",
+      "alias": "lastname",
+      "dataType": "string"
+    },
+    {
+      "type": "subquery",
+      "alias": "B_count",
+      "select": {
+        "type": "select",
+        "distinct": false,
+        "fields": [
+          {
+            "type": "aggregate",
+            "function": "COUNT",
+            "field": "*",
+            "alias": "count",
+            "dataType": "number",
+            "nullHandling": "ignore"
+          }
+        ],
+        "from": [
+          {
+            "type": "table",
+            "name": "B",
+            "alias": "B"
+          }
+        ],
+        "where": {
+          "type": "condition",
+          "left": {
+            "type": "field",
+            "table": "B",
+            "field": "A_id",
+            "dataType": "number"
+          },
+          "operator": "=",
+          "right": {
+            "type": "field",
+            "table": "A",
+            "field": "id",
+            "dataType": "number"
+          }
+        }
+      }
+    },
+    {
+      "type": "subquery",
+      "alias": "max_salary",
+      "select": {
+        "type": "select",
+        "distinct": false,
+        "fields": [
+          {
+            "type": "aggregate",
+            "function": "MAX",
+            "field": "salary",
+            "alias": "max_salary",
+            "dataType": "number",
+            "nullHandling": "ignore"
+          }
+        ],
+        "from": [
+          {
+            "type": "table",
+            "name": "C",
+            "alias": "C"
+          }
+        ],
+        "where": {
+          "type": "condition",
+          "left": {
+            "type": "field",
+            "table": "C",
+            "field": "A_id",
+            "dataType": "number"
+          },
+          "operator": "=",
+          "right": {
+            "type": "field",
+            "table": "A",
+            "field": "id",
+            "dataType": "number"
+          }
+        }
+      }
+    }
+  ],
+  "from": [
+    {
+      "type": "table",
+      "name": "A",
+      "alias": "A"
+    }
+  ],
+  "where": {
+    "type": "condition",
+    "left": {
+      "type": "field",
+      "table": "A",
+      "field": "id",
+      "dataType": "number"
+    },
+    "operator": "IN",
+    "right": {
+      "type": "subquery",
+      "select": {
+        "type": "select",
+        "distinct": false,
+        "fields": [
+          {
+            "type": "field",
+            "field": "A_id",
+            "table": "D",
+            "dataType": "number"
+          }
+        ],
+        "from": [
+          {
+            "type": "table",
+            "name": "D",
+            "alias": "D"
+          }
+        ],
+        "where": {
+          "type": "condition",
+          "left": {
+            "type": "field",
+            "table": "D",
+            "field": "status",
+            "dataType": "string"
+          },
+          "operator": "=",
+          "right": {
+            "type": "value",
+            "value": "Active",
+            "dataType": "string"
+          }
+        }
+      }
+    }
+  },
+  "order_by": [
+    {
+      "field": "id",
+      "table": "A",
+      "direction": "ASC",
+      "nulls": "LAST"
+    }
+  ],
+  "validations": {
+    "requiresGroupBy": false,
+    "referencedTables": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "dependencies": {
+      "tables": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "columns": {
+        "A": [
+          "id",
+          "username",
+          "lastname"
+        ],
+        "B": [
+          "A_id"
+        ],
+        "C": [
+          "A_id",
+          "salary"
+        ],
+        "D": [
+          "A_id",
+          "status"
+        ]
+      }
+    }
+  }
+}
